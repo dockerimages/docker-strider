@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "haproxy finish script runned"

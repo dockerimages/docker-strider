@@ -1,0 +1,12 @@
+#!/bin/bash
+cat /etc/haproxy-config/haproxy.default.cfg > /etc/haproxy-config/haproxy-prepare.cfg
+cat /etc/haproxy-config/*.rules.cfg >> /etc/haproxy-config/haproxy-prepare.cfg
+cat /etc/haproxy-config/*.backends.cfg >> /etc/haproxy-config/haproxy-prepare.cfg
+rm -rf /etc/haproxy/haproxy.cfg
+cp /etc/haproxy-config/haproxy-prepare.cfg /etc/haproxy/haproxy.cfg
+MOG=$(ps aux | grep -v "grep" | grep 'haproxy -D')
+
+if [ -z "$MOG" ]; then
+haproxy -D -f /etc/haproxy/haproxy.cfg -n 250000 -N 250000 -p /var/run/haproxy.pid -sf $(ps aux | grep -v "grep" | grep 'haproxy -f' | awk '{print $2}') &
+fi
+

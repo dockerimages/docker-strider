@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+# set if not set else where
+# STRIDER_TAG v1.6.4
+# STRIDER_REPO https://github.com/Strider-CD/strider
+#
+
+export STRIDER_REPO=https://github.com/Strider-CD/strider
+
+if [[ -n $GENERATE_ADMIN_USER ]]; then
+  ADMIN="admin@${FQDN-example.org}"
+  PASSWD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+  strider addUser --email $ADMIN --password $PASSWD --admin true &&
+    echo "Admin User: $ADMIN, Admin Pass: $PASSWD"
+fi
+
+
+## add starting tests
+adduser --disabled-password --gecos "" --home /home/strider strider
+# chown -R strider:strider /home/strider
+# USER strider
+# ENV HOME /home/strider
+
+## if dir not exist clone it
+mkdir -p /opt/strider
+chown -R strider:strider /opt/strider
+git clone --branch $STRIDER_TAG --depth 1 $STRIDER_REPO /opt/strider/src && \
+  cd /opt/strider/src && npm install && npm run build
+ln -s /opt/strider/src/bin/strider /usr/local/bin/strider
+
