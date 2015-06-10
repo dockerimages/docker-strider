@@ -1,0 +1,1 @@
+[ -f ~/.zlogout ] && . ~/.zlogout || true

@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "haproxy finish script runned"
+echo "strider execution finished that shouldnt happen lets check for errors runned"

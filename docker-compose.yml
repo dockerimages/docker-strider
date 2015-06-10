@@ -1,0 +1,27 @@
+mongodb:
+  image: dockerimages/mongodb:latest
+  environment:
+    - DB_USER=strider
+    - DB_PASS=strider
+    - DB_NAME=strider_production
+  volumes:
+    - /srv/docker/strider/mongodb:/var/lib/postgresql
+strider:
+  image: dockerimages/strider:1.6.4
+  links:
+    - strider-db:mongodb
+  ports:
+    - "13000:3000"
+  environment:
+    - SERVER_NAME=https://strider.example.com
+    - HOST=0.0.0.0
+    - PORT=3000
+    - DB_URI=null
+    - HTTP_PROXY=null
+    - SMTP_HOST=smtp.example.com
+    - SMTP_PORT=587
+    - SMTP_USER="myuser"
+    - SMTP_PASS="supersecret"
+    - SMTP_FROM="Strider noreply@stridercd.com"
+  volumes:
+    - /srv/docker/strider/gitlab:/home/git/data

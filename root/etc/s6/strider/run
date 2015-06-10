@@ -6,7 +6,33 @@ set -e
 #
 
 export STRIDER_REPO=https://github.com/Strider-CD/strider
+export STRIDER_TAG="${STRIDER_TAG:-v1.6.6}"
+export NODE_VERSION="${NODE_VERSION:-stable}"
+export HOME=/home/strider
+## check if database is there else we need to do nothing
 
+
+## add starting tests
+adduser --disabled-password --gecos "" --home /home/strider strider
+chown -R strider:strider /home/strider
+
+## if strider version (could be mounted as volume if exists or perists not exist clone it
+[ -d /home/strider/$STRIDER_TAG ] && echo ""Exists"" || echo "Not Exists" \
+ && sudo -u strider git clone --branch $STRIDER_TAG --depth 1 $STRIDER_REPO /home/strider/$STRIDER_TAG 
+
+cd /home/strider/$STRIDER_TAG
+
+# to install npm in that virtualenv
+# curl https://www.npmjs.org/install.sh | sh
+
+sudo -u strider nave use $NODE_VERSION npm install
+sudo -u strider nave use $NODE_VERSION npm run build
+ln -s /home/strider/$STRIDER_TAG/bin/strider /usr/local/bin/strider
+
+
+
+
+## create admin if strider is there
 if [[ -n $GENERATE_ADMIN_USER ]]; then
   ADMIN="admin@${FQDN-example.org}"
   PASSWD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
@@ -14,17 +40,4 @@ if [[ -n $GENERATE_ADMIN_USER ]]; then
     echo "Admin User: $ADMIN, Admin Pass: $PASSWD"
 fi
 
-
-## add starting tests
-adduser --disabled-password --gecos "" --home /home/strider strider
-# chown -R strider:strider /home/strider
-# USER strider
-# ENV HOME /home/strider
-
-## if dir not exist clone it
-mkdir -p /opt/strider
-chown -R strider:strider /opt/strider
-git clone --branch $STRIDER_TAG --depth 1 $STRIDER_REPO /opt/strider/src && \
-  cd /opt/strider/src && npm install && npm run build
-ln -s /opt/strider/src/bin/strider /usr/local/bin/strider
 
