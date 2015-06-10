@@ -8,6 +8,21 @@ You can Choose what Node JS Version to use and What Strider Version.
 
 You must pass in a DB_URI with a valid mongodb connection string and a domain to listen on.
 
+
+## Changelog
+
+	v1.0 - First working version by dspeed
+	- Removed Supervisor because it don't handels production kill signals and all that realy good under docker
+	- Added s6 init as replacement for supervisor because s6 suite is the only one that technical works right in docker (ok experimental my systemd img works clear too)
+	- Removed not needed stuff
+	- added env vars for setting NodeJS and Strider Version on start
+	- added method to persist the data (Compiled NODEJS + STRIDER + USERCONFIG)
+	- updates to the readme
+	- put the apache licence into the main strider project.
+
+	v0.1 - inital state from strider-CD
+
+
 ## config
 
     SERVER_NAME - Required; Address at which server will be accessible on the Internet. E.g. https://strider.example.com (note: no trailing slash)

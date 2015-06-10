@@ -13,24 +13,23 @@ export HOME=/home/strider
 
 
 ## add starting tests
+chown -R 1000:1000 /home/strider
 adduser --disabled-password --gecos "" --home /home/strider strider
-chown -R strider:strider /home/strider
 
 ## if strider version (could be mounted as volume if exists or perists not exist clone it
-[ -d /home/strider/$STRIDER_TAG ] && echo ""Exists"" || echo "Not Exists" \
- && sudo -u strider git clone --branch $STRIDER_TAG --depth 1 $STRIDER_REPO /home/strider/$STRIDER_TAG 
+if [ -d /home/strider/$STRIDER_TAG ]
+ then
+   echo ""Exists""
+ else
+  echo "Not Exists"
+  sudo -u strider git clone --branch $STRIDER_TAG --depth 1 $STRIDER_REPO /home/strider/$STRIDER_TAG 
+  ln -s /home/strider/$STRIDER_TAG/bin/strider /usr/local/bin/strider
+fi
 
 cd /home/strider/$STRIDER_TAG
 
-# to install npm in that virtualenv
-# curl https://www.npmjs.org/install.sh | sh
-
 sudo -u strider nave use $NODE_VERSION npm install
 sudo -u strider nave use $NODE_VERSION npm run build
-ln -s /home/strider/$STRIDER_TAG/bin/strider /usr/local/bin/strider
-
-
-
 
 ## create admin if strider is there
 if [[ -n $GENERATE_ADMIN_USER ]]; then
