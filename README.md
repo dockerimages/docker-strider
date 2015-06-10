@@ -2,9 +2,11 @@
 
 Semi-official docker build that does NOT ship with internal Mongo or SSH.
 
-It contains supervisord, latest strider, its dependent modules and nodejs/npm.
+It contains s6-init, strider installer and its dependent modules and nodejs/npm.
 
-You must pass in a DB_URI with a valid mongodb connection string.
+You can Choose what Node JS Version to use and What Strider Version.
+
+You must pass in a DB_URI with a valid mongodb connection string and a domain to listen on.
 
 ## config
 
@@ -20,19 +22,18 @@ You must pass in a DB_URI with a valid mongodb connection string.
     SMTP_PASS - SMTP auth password e.g. "supersecret"
     SMTP_FROM - Default FROM address e.g. "Strider noreply@stridercd.com" (default)
 
-    docker run -t \
-	-e SERVER_NAME =
-	-e 
-	-e
-	-e 
-	-e
-	-e
-
+    docker run --rm \
+     -it \
+     --link strider-db:mongodb \
+     -e NODE_VERSION="0.10" \
+     -e STRIDER_TAG="v1.6.6" \ 
+     -e SERVER_NAME="http://strider.mydomain.com" \
+     -v $(pwd)/strider-home:/home/strider \
+     strider
 
 
 ## Pulling
 
-Hosted on Quay.io. Find what to `docker pull` by checking the TAG file
 
 ## Building
 
